@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Space VR Game</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene background="color: black">
+      <!-- Camera with WASD controls -->
+      <a-entity id="player" position="0 1.6 0">
+        <a-camera wasd-controls look-controls></a-camera>
+      </a-entity>
+
+      <!-- Scoreboard -->
+      <a-entity id="hud" position="0 2 -1">
+        <a-text id="score" value="Skor: 0" color="white" align="center"></a-text>
+      </a-entity>
+
+      <!-- Spaceship -->
+      <a-box position="0 0 -5" depth="1" height="1" width="2" color="#4CC3D9"></a-box>
+      <a-cone position="0 0 -4.5" radius-bottom="1" height="1" color="#FFC65D"></a-cone>
+
+      <!-- Planet -->
+      <a-sphere position="5 2 -10" radius="2" color="#7BC8A4"></a-sphere>
+
+      <!-- Collectible cubes -->
+      <a-entity id="collectibles"></a-entity>
+
+      <!-- Stars -->
+      <a-entity id="stars"></a-entity>
+
+      <script>
+        // Star field generator
+        var starEntity = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+          var star = document.createElement('a-sphere');
+          star.setAttribute('radius', 0.1);
+          star.setAttribute('color', 'white');
+          var x = (Math.random() - 0.5) * 50;
+          var y = (Math.random() - 0.5) * 50;
+          var z = (Math.random() - 0.5) * 50;
+          star.setAttribute('position', `${x} ${y} ${z}`);
+          starEntity.appendChild(star);
+        }
+
+        // Generate collectibles
+        var collectiblesParent = document.getElementById('collectibles');
+        var collectibles = [];
+        for (let i = 0; i < 10; i++) {
+          var cube = document.createElement('a-box');
+          cube.setAttribute('class', 'collectible');
+          cube.setAttribute('color', '#FF0000');
+          cube.setAttribute('depth', 0.5);
+          cube.setAttribute('height', 0.5);
+          cube.setAttribute('width', 0.5);
+          cube.setAttribute('animation', 'property: rotation; to: 0 360 0; loop: true; dur: 2000');
+          var x = (Math.random() - 0.5) * 20;
+          var y = (Math.random() - 0.5) * 4 + 1; // slightly above ground
+          var z = (Math.random() - 0.5) * -20;
+          cube.setAttribute('position', `${x} ${y} ${z}`);
+          collectiblesParent.appendChild(cube);
+          collectibles.push(cube);
+        }
+
+        var player = document.getElementById('player');
+        var scoreText = document.getElementById('score');
+        var score = 0;
+
+        function checkCollision() {
+          var playerPos = player.object3D.position;
+          collectibles.forEach(function(cube) {
+            if (!cube.getAttribute('visible')) return;
+            var cubePos = cube.object3D.position;
+            if (playerPos.distanceTo(cubePos) < 1) {
+              cube.setAttribute('visible', false);
+              score += 1;
+              scoreText.setAttribute('value', 'Skor: ' + score);
+            }
+          });
+          requestAnimationFrame(checkCollision);
+        }
+        checkCollision();
+      </script>
+    </a-scene>
+  </body>
+</html>
