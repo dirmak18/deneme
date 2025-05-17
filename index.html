@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Space VR Game</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene background="color: black">
+      <!-- Camera -->
+      <a-entity position="0 1.6 0">
+        <a-camera wasd-controls-enabled="true" look-controls-enabled="true"></a-camera>
+      </a-entity>
+
+      <!-- Simple spaceship -->
+      <a-box position="0 0 -5" depth="1" height="1" width="2" color="#4CC3D9"></a-box>
+      <a-cone position="0 0 -4.5" radius-bottom="1" height="1" color="#FFC65D"></a-cone>
+
+      <!-- Planet -->
+      <a-sphere position="5 2 -10" radius="2" color="#7BC8A4"></a-sphere>
+
+      <!-- Stars -->
+      <a-entity id="stars"></a-entity>
+
+      <script>
+        // Simple star field generator
+        var scene = document.querySelector("a-scene");
+        var starEntity = document.getElementById("stars");
+        for (let i = 0; i < 100; i++) {
+          var star = document.createElement("a-sphere");
+          star.setAttribute("radius", 0.1);
+          star.setAttribute("color", "white");
+          var x = (Math.random() - 0.5) * 50;
+          var y = (Math.random() - 0.5) * 50;
+          var z = (Math.random() - 0.5) * 50;
+          star.setAttribute("position", `${x} ${y} ${z}`);
+          starEntity.appendChild(star);
+        }
+      </script>
+    </a-scene>
+  </body>
+</html>
